@@ -1,5 +1,3 @@
-package org.example;
-
 import java.util.HashMap;
 
 public class WeibllDist_Cont

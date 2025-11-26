@@ -1,4 +1,4 @@
-package org.example;
+
 
 public class LogNormDist_Cont extends NormDist_Cont
 {

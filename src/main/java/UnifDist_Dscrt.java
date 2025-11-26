@@ -1,5 +1,3 @@
-package org.example;
-
 public class UnifDist_Dscrt
 {
     public double[] values;
