@@ -13,6 +13,7 @@ public class LogNormDist_Cont extends NormDist_Cont
 
         zScoresProbMap = ZScoreMap.getMap();
     }
+    /*
     @Override
     public double findZScore()
     {
@@ -47,4 +48,5 @@ public class LogNormDist_Cont extends NormDist_Cont
         }
         else {stdDev = x;}
     }
+    */
 }
