@@ -4,7 +4,7 @@
 public class Main {
     public static void main(String[] args)
     {
-        NormDist_Cont normDistCont = new NormDist_Cont(100, 15);
+        NormDist normDistCont = new NormDist(100, 15);
         try
         {
             normDistCont.Graph("Intelligence Quotient", "IQ");
@@ -12,11 +12,19 @@ public class Main {
         {
             e.printStackTrace();
         }
-        LogNormDist_Cont logNormDistCont = new LogNormDist_Cont(10, 1);
+        LogNormDist logNormDistCont = new LogNormDist(10, 1);
         try
         {
             logNormDistCont.Graph("City Population", "Number of People");
         } catch  (Exception e)
+        {
+            e.printStackTrace();
+        }
+        WeibullDist weibullDistCont = new WeibullDist(100, 0.99);
+        try
+        {
+            weibullDistCont.Graph("fart", "poop");
+        } catch (Exception e)
         {
             e.printStackTrace();
         }

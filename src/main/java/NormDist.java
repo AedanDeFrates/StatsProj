@@ -7,7 +7,7 @@ import org.jfree.data.xy.XYSeriesCollection;
 import java.io.File;
 import java.io.IOException;
 
-public class NormDist_Cont
+public class NormDist
 {
     //Mean is the known average of the continuous function
     protected double mean = 0;
@@ -17,7 +17,7 @@ public class NormDist_Cont
     /**
      * Constructs a NormalDistribution with a mean of 0, a stdDev of 1, and no standardizedValue.
      * */
-    public NormDist_Cont() {}
+    public NormDist() {}
     /**
      * Constructs a NormalDistribution object with a value, a mean for the continuous distribution, and a stdDev
      * From the mean and the standard deviation, we get an understanding of the curve
@@ -27,7 +27,7 @@ public class NormDist_Cont
      * @param sigma {double}  - The standard deviation of the Normal Distribution
      * @throws IllegalArgumentException {exception} - Throws if the standard deviation is less than or equal to 0
     * */
-    public NormDist_Cont(double mu, double sigma)
+    public NormDist(double mu, double sigma)
     {
         if (sigma <= 0) {throw new IllegalArgumentException("stdDev is less than or equal to zero");}
 
