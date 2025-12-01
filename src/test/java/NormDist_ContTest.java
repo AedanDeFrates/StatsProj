@@ -9,10 +9,27 @@ class NormDist_ContTest
     {
         System.out.println(ZScoreMap.getLength());
 
-        NormDist_Cont normDistCont = new NormDist_Cont(15.5, 18.4, 1.9);
+        NormDist_Cont normDistCont = new NormDist_Cont( 18.4, 1.9);
         assertEquals(18.4, normDistCont.mean);
         assertEquals(1.9, normDistCont.stdDev);
-        assertEquals(15.5, normDistCont.standardizedValue);
+    }
+
+    @Test
+    void testMapToArray()
+    {
+        NormDist_Cont iqDist = new NormDist_Cont(100, 15);
+        double[] mapToArray = iqDist.getRawValues();
+
+        for(double value : mapToArray)
+        {
+            System.out.print(value + " ");
+        }
+    }
+    @Test
+    void testNormDist_Cont2()
+    {
+        NormDist_Cont normDistCont = new NormDist_Cont(100, 15);
+        normDistCont.getRawValues();
     }
 
 }

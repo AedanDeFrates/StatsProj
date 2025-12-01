@@ -2,7 +2,24 @@
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
-    public static void main(String[] args){
+    public static void main(String[] args)
+    {
+        NormDist_Cont normDistCont = new NormDist_Cont(100, 15);
+        try
+        {
+            normDistCont.Graph("Intelligence Quotient", "IQ");
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        LogNormDist_Cont logNormDistCont = new LogNormDist_Cont(10, 1);
+        try
+        {
+            logNormDistCont.Graph("City Population", "Number of People");
+        } catch  (Exception e)
+        {
+            e.printStackTrace();
+        }
 
     }
 }
