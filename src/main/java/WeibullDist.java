@@ -6,53 +6,63 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 
-public class LogNormDist_Cont extends NormDist_Cont
+public class WeibullDist
 {
-    public LogNormDist_Cont(double mu, double sigma)
-    {
-        assert sigma > 0 : "must declare standard deviation greater than zero";
+    /**
+     * Larger α → distribution spreads out more; typical values of x increase.
+     * Smaller α → distribution is “squished” toward 0.
+     */
+    private double alpha = 1;
+    /**
+     * β < 1 → decreasing failure rate; most probability near 0.
+     * β = 1 → reduces to an exponential distribution.
+     * β > 1 → increasing failure rate; the PDF rises to a peak then decays.
+     */
+    private double beta = 1;
 
-        mean =  mu;
-        stdDev = sigma;
+    public WeibullDist(double a, double b)
+    {
+        if (a <= 0){throw new IllegalArgumentException("Alpha must be grater than 0");}
+        if (b <= 0){throw new IllegalArgumentException("Beta must be grater than 0");}
+
+        alpha = a;
+        beta = b;
     }
-    @Override
     public double[] getRawValues()
     {
         double[] xVals = new double[ZScoreMap.zScoresArray.length];
         double[] zScores = ZScoreMap.zScoresArray;
+        HashMap<Double, Double> map = ZScoreMap.getMap();
+
         int i = 0;
 
         for (double z : zScores)
         {
-            double x = Math.exp((z*stdDev) + mean);
+            double x = alpha * Math.pow(-Math.log(1 - map.get(z)), 1/beta);
             xVals[i] = x;
             i++;
-
         }
         return xVals;
     }
-
-    @Override
     public double[] evaluatePDF()
     {
         double[] xVals = getRawValues();
         double[] valsPDF = new double[xVals.length];
-        double fnct1 = 1 / (stdDev * Math.sqrt(2*Math.PI));
+        double coeff = beta/alpha;
 
         for (int i = 0; i < xVals.length; i++)
         {
             double x = xVals[i];
-            if (x <= 0) {valsPDF[i] = fnct1; continue;}
+            if (x < 0) {valsPDF[i] = 0; continue;}
 
-            double exponent = -Math.pow(Math.log(x)-mean, 2) / (2* Math.pow(stdDev,2));
-            valsPDF[i] = fnct1/x * Math.exp(exponent);
+            valsPDF[i] = coeff * (Math.pow(x/alpha, beta -1)) * Math.exp(-(Math.pow(x/alpha, beta)));
         }
 
         return valsPDF;
     }
 
-    @Override
     public void Graph(String title, String xAxis) throws IOException {
         double[] xVals = getRawValues();
         double[] probs = evaluatePDF();
@@ -70,7 +80,7 @@ public class LogNormDist_Cont extends NormDist_Cont
 
         JFreeChart chart = ChartFactory.createXYLineChart(title, xAxis, "Probability", dataset);
 
-        File file = new File("/home/fhlic/Desktop/IdeaProjects/StatsProject/LogNormDistGraph.png");
+        File file = new File("/home/fhlic/Desktop/IdeaProjects/StatsProject/WeibullDistGraph.png");
         ChartUtils.saveChartAsPNG(file, chart, 800, 600);
     }
 }

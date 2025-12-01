@@ -1,4 +1,4 @@
-public class UnifDist_Dscrt
+public class UniformDiscreteDist
 {
     public double[] values;
     public int k;
@@ -6,7 +6,7 @@ public class UnifDist_Dscrt
     public double variance = 0;
     public double probability = 0;
 
-    public UnifDist_Dscrt(double[] vals)
+    public UniformDiscreteDist(double[] vals)
     {
         if (vals == null) {throw new NullPointerException("vals is null");}
         else if (vals.length == 0) {values = new double[]{0};}
