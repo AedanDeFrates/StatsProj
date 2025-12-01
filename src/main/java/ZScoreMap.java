@@ -6,7 +6,7 @@ public class ZScoreMap
 {
     private static final HashMap<Double, Double> zScoresProbMap = new HashMap<>();
 
-    private static double[] zScoresArray =  new double[]
+    public final static double[] zScoresArray =  new double[]
             {// Negative Z-Scores (Z = -3.49 to Z = -0.00)
             -3.49, -3.48, -3.47, -3.46, -3.45, -3.44, -3.43, -3.42, -3.41, -3.40,
             -3.39, -3.38, -3.37, -3.36, -3.35, -3.34, -3.33, -3.32, -3.31, -3.30,
@@ -80,7 +80,7 @@ public class ZScoreMap
             3.20, 3.21, 3.22, 3.23, 3.24, 3.25, 3.26, 3.27, 3.28, 3.29,
             3.30, 3.31, 3.32, 3.33, 3.34, 3.35, 3.36, 3.37, 3.38, 3.39,
             3.40, 3.41, 3.42, 3.43, 3.44, 3.45, 3.46, 3.47, 3.48, 3.49};
-    private static double[] probabilityArray = new double[]
+    public final static double[] probabilityArray = new double[]
             {
             // Probabilities for Negative Z-Scores (Z = -3.49 to Z = -0.00)
             0.0002, 0.0003, 0.0003, 0.0003, 0.0003, 0.0003, 0.0003, 0.0003, 0.0003, 0.0003,

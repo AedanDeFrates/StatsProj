@@ -1,66 +1,121 @@
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartUtils;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 
-import java.util.HashMap;
+import java.io.File;
+import java.io.IOException;
 
 public class NormDist_Cont
 {
-    protected double standardizedValue = 0;
+    //Mean is the known average of the continuous function
     protected double mean = 0;
-    protected double stdDev = 0;
+    //Standar d Deviation or stdDev or sdis the spread of the disribution
+    protected double stdDev = 1;
 
-    protected HashMap<Double, Double> zScoresProbMap;
-
-    public NormDist_Cont()
+    /**
+     * Constructs a NormalDistribution with a mean of 0, a stdDev of 1, and no standardizedValue.
+     * */
+    public NormDist_Cont() {}
+    /**
+     * Constructs a NormalDistribution object with a value, a mean for the continuous distribution, and a stdDev
+     * From the mean and the standard deviation, we get an understanding of the curve
+     * From the standardized value the probability of the value occurring can be derived from the function or from z-vals
+     *
+     * @param mu {double}  - The mean of the Normal Distribution
+     * @param sigma {double}  - The standard deviation of the Normal Distribution
+     * @throws IllegalArgumentException {exception} - Throws if the standard deviation is less than or equal to 0
+    * */
+    public NormDist_Cont(double mu, double sigma)
     {
-        zScoresProbMap = ZScoreMap.getMap();
-    }
-    public NormDist_Cont(double x, double mu, double sigma)
-    {
-        assert sigma > 0 : "must declare standard deviation greater than zero";
+        if (sigma <= 0) {throw new IllegalArgumentException("stdDev is less than or equal to zero");}
 
-        standardizedValue = x;
         mean =  mu;
         stdDev = sigma;
+    }
 
-        zScoresProbMap = ZScoreMap.getMap();
-    }
-    protected double findZScore()
+    /**
+     * This method evaluates, from zScores -3.49 to 3.49, all possible standardized values
+     * in this range. If this method is called with the default values for mean and stdDev then
+     * the function simply returns an array of Z-scores.
+     *
+     * @return xVals {double[]} - Set of all possible x values for a standard deviation
+     */
+    public double[] getRawValues()
     {
-        double zScore = (standardizedValue -mean)/stdDev;
-        zScore = zScore - zScore % 0.01;
-        return zScore;
-    }
-    protected double boundZScore(double z)
-    {
-        z = z - z % 0.01;
-        if(z >= 3.49 || z <= -3.49)
+        if(mean == 0 && stdDev == 1) {return ZScoreMap.zScoresArray;}
+
+        double[] xVals = new double[ZScoreMap.zScoresArray.length];
+        double[] zScores = ZScoreMap.zScoresArray;
+        int i = 0;
+
+        for(double z : zScores)
         {
-            throw new ArithmeticException("invalid z variable (either z >= 3.49 or z <= -3.49)");
+            double x = (z*stdDev) + mean;
+            xVals[i] = x;
+            i++;
         }
-        return z;
+        return xVals;
     }
-    public double findMeanFromZScore(double z)
+
+    /**
+     * This method is a helper function to create a visual representation of the standard deviation.
+     * Acting as a y Axis for the graph, the probabilities returned by the function correspond to a raw value from the z-score array.
+     * (z-scores limited on the domain from -3.49 to 3.49)
+     *
+     * @return valsPDF {double[]} - Set of probabilities, each corresponding to a raw value.
+     */
+    public double[] evaluatePDF()
     {
-        z = boundZScore(z);
-        return (standardizedValue/stdDev) - z;
+        double fnct1 = 1 / (stdDev * Math.sqrt(2 * Math.PI));
+        double[] xVals = getRawValues();
+        double[] valsPDF = new double[xVals.length];
+
+        for (int i = 0; i < xVals.length; i++)
+        {
+            double x = xVals[i];
+            double exponent = -Math.pow(x - mean, 2) / (2 * Math.pow(stdDev, 2));
+            valsPDF[i] = fnct1 * Math.exp(exponent);
+        }
+
+        return valsPDF;
     }
-    public double findStdDevFromZScore(double z)
-    {
-        z = boundZScore(z);
-        return (standardizedValue - mean)/z;
+
+    /**
+     * This function maps the function as an XY relationship, and creates a new file, which is a png of a graph of
+     * the aproxomate function.
+     *
+     * @param title {String} - header for the graph
+     * @param xAxis {String} - x-axis header for the graph
+     * @throws IOException - mandatory throws
+     */
+    public void Graph(String title, String xAxis) throws IOException {
+        double[] xVals = getRawValues();
+        double[] probs = evaluatePDF();
+
+        if(xVals.length != probs.length){throw new IllegalArgumentException("xVals.length != probs.length");}
+
+        XYSeries series = new XYSeries("Probability of Values");
+        for(int i = 0; i < xVals.length; i++)
+        {
+            series.add(xVals[i], probs[i]);
+        }
+
+        XYSeriesCollection dataset = new XYSeriesCollection();
+        dataset.addSeries(series);
+
+        JFreeChart chart = ChartFactory.createXYLineChart(title, xAxis, "Probability", dataset);
+
+        File file = new File("/home/fhlic/Desktop/IdeaProjects/StatsProject/NormDistGraph.png");
+        ChartUtils.saveChartAsPNG(file, chart, 800, 600);
     }
-    public double findStandardizedValueFromZScore(double z)
-    {
-        z = boundZScore(z);
-        return (z*stdDev) - mean;
-    }
-    public void setStandardizedValue(double x){standardizedValue = x;}
+
     public void setMean(double mu){mean = mu;}
-    public void setStdDev(double sigma)
-    {
-        if(sigma == 0)
-        {
-            throw new  IllegalArgumentException("Cannot declare 0 as standard deviation");
-        }
+    public void setStdDev(double sigma) {
+        if(sigma <= 0) {throw new  IllegalArgumentException("stdDev is less than or equal to zero");}
         else {stdDev = sigma;}
     }
+    public double getMean(){return mean;}
+    public double getStdDev(){return stdDev;}
 }
